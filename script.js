@@ -1,24 +1,48 @@
-//your JS code here. If required.
-// helper function to create a delay using Promise
-function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+// references
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+const checkbox = document.getElementById("checkbox");
+const submitBtn = document.getElementById("submit");
+const existingBtn = document.getElementById("existing");
 
-// main async function to handle the button click
-async function showMessage() {
-  const text = document.getElementById("text").value;
-  const delay = Number(document.getElementById("delay").value);
-  const output = document.getElementById("output");
+// check if credentials exist in localStorage on page load
+window.addEventListener("DOMContentLoaded", () => {
+  const savedUser = localStorage.getItem("username");
+  const savedPass = localStorage.getItem("password");
 
-  // clear previous output
-  output.textContent = "";
+  if (savedUser && savedPass) {
+    existingBtn.style.display = "inline-block";
+  } else {
+    existingBtn.style.display = "none";
+  }
+});
 
-  // wait for the given delay
-  await wait(delay);
+// handle submit
+submitBtn.addEventListener("click", () => {
+  const username = usernameInput.value;
+  const password = passwordInput.value;
 
-  // show the message after the delay
-  output.textContent = text;
-}
+  if (!username || !password) return;
 
-// attach event listener to button
-document.getElementById("btn").addEventListener("click", showMessage);
+  alert(`Logged in as ${username}`);
+
+  if (checkbox.checked) {
+    // save to localStorage
+    localStorage.setItem("username", username);
+    localStorage.setItem("password", password);
+    existingBtn.style.display = "inline-block";
+  } else {
+    // clear localStorage
+    localStorage.removeItem("username");
+    localStorage.removeItem("password");
+    existingBtn.style.display = "none";
+  }
+});
+
+// handle existing user login
+existingBtn.addEventListener("click", () => {
+  const savedUser = localStorage.getItem("username");
+  if (savedUser) {
+    alert(`Logged in as ${savedUser}`);
+  }
+});
